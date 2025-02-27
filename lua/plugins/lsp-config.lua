@@ -27,6 +27,15 @@ return {
 			lspconfig.clangd.setup({
 				capabilities = capabilities,
 			})
+            lspconfig.phpactor.setup({
+                capabilities = capabilities,
+            })
+            lspconfig.jdtls.setup({
+                capabilities = capabilities,
+            })
+            lspconfig.omnisharp.setup({
+                capabilities = capabilities,
+            })
 
 			-- keymaps
 			vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
