@@ -14,9 +14,11 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+require("filetype")
 require("nvim-config")
 require("remap")
 require("lazy").setup("plugins")
+require("nvim-autopairs").setup()
 
 -- quit background
 vim.api.nvim_set_hl(0, "Normal", { bg = "none" })

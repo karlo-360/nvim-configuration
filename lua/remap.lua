@@ -22,3 +22,18 @@ vim.keymap.set("x", "<leader>p", "\"_dP")
 vim.keymap.set("n", "<leader>y", "\"+y")
 vim.keymap.set("v", "<leader>y", "\"+y")
 vim.keymap.set("n", "<leader>Y", "\"+Y")
+
+vim.keymap.set("n", "gk", "gt")
+vim.keymap.set("n", "gj", "gT")
+
+vim.keymap.set("n", "<leader>ww", "<C-w>w")
+vim.keymap.set("n", "<leader>wh", "<C-w>h")
+vim.keymap.set("n", "<leader>wj", "<C-w>j")
+vim.keymap.set("n", "<leader>wk", "<C-w>k")
+vim.keymap.set("n", "<leader>wl", "<C-w>l")
+
+vim.keymap.set("n", "=", [[<cmd>vertical resize +5<cr>]])
+vim.keymap.set("n", "-", [[<cmd>vertical resize -5<cr>]])
+
+vim.keymap.set("n", "<leader>nt", [[<cmd>vertical rightbelow 45vs | terminal<cr>]])
+vim.keymap.set("t", "jk", "<C-\\><C-n>")
