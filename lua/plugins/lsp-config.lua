@@ -4,9 +4,10 @@ return {
         "williamboman/mason.nvim",
         config = function()
             require("mason").setup()
-        end
+        end,
     },
     {
+        -- Mason LSPConfig
         "williamboman/mason-lspconfig.nvim",
         config = function()
             require("mason-lspconfig").setup({
@@ -15,50 +16,61 @@ return {
         end,
     },
     {
+        -- LSP Config (nueva sintaxis)
         "neovim/nvim-lspconfig",
         config = function()
             local capabilities = require("cmp_nvim_lsp").default_capabilities()
+            local opts = { noremap = true, silent = true }
 
-            -- Define `opts` como una tabla vacía
-            local opts = {}
+            -- Nueva forma de obtener la configuración de LSP
+            local lsp = vim.lsp.config
 
-            local lspconfig = require("lspconfig")
-            lspconfig.lua_ls.setup({
+            lsp.lua_ls = {
                 capabilities = capabilities,
-            })
-            lspconfig.clangd.setup({
+            }
+
+            lsp.clangd = {
                 capabilities = capabilities,
-            })
-            lspconfig.phpactor.setup({
+            }
+
+            lsp.phpactor = {
                 capabilities = capabilities,
-            })
-            --lspconfig.jdtls.setup({
-                --capabilities = capabilities,
-            --})
-            lspconfig.omnisharp.setup({
+            }
+
+            -- lsp.jdtls = {
+            --     capabilities = capabilities,
+            -- }
+
+            lsp.omnisharp = {
                 capabilities = capabilities,
                 on_attach = function(client, bufnr)
-                    -- Mapeos específicos para OmniSharp
-                    vim.api.nvim_buf_set_keymap(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
-                    vim.api.nvim_buf_set_keymap(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
-                    vim.api.nvim_buf_set_keymap(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
+                    local map = vim.api.nvim_buf_set_keymap
+                    map(bufnr, "n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
+                    map(bufnr, "n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
+                    map(bufnr, "n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
                 end,
                 cmd = { "omnisharp", "--languageserver", "--hostPID", tostring(vim.fn.getpid()) },
                 enable_roslyn_analyzers = true,
                 enable_import_completion = true,
                 organize_imports_on_format = true,
-            })
+            }
 
-            -- keymaps
-            vim.keymap.set("n", "K", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
-            vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<cr>", opts)
-            vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<cr>", opts)
-            vim.keymap.set("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<cr>", opts)
-            vim.keymap.set("n", "go", "<cmd>lua vim.lsp.buf.type_definition()<cr>", opts)
-            vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<cr>", opts)
-            vim.keymap.set("n", "gs", "<cmd>lua vim.lsp.buf.signature_help()<cr>", opts)
-            vim.keymap.set("n", "<leader>rr", "<cmd>lua vim.lsp.buf.rename()<cr>", opts)
-            vim.keymap.set("n", "<leader>a", "<cmd>lua vim.lsp.buf.code_action()<cr>", opts)
+            -- Registrar los servidores
+            vim.lsp.start(lsp.lua_ls)
+            vim.lsp.start(lsp.clangd)
+            vim.lsp.start(lsp.phpactor)
+            vim.lsp.start(lsp.omnisharp)
+
+            -- Keymaps globales
+            vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+            vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+            vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+            vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+            vim.keymap.set("n", "go", vim.lsp.buf.type_definition, opts)
+            vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+            vim.keymap.set("n", "gs", vim.lsp.buf.signature_help, opts)
+            vim.keymap.set("n", "<leader>rr", vim.lsp.buf.rename, opts)
+            vim.keymap.set("n", "<leader>a", vim.lsp.buf.code_action, opts)
 
             vim.diagnostic.config({
                 signs = false,
@@ -68,26 +80,22 @@ return {
         end,
     },
     {
-        -- csharp.nvim
+        -- C# soporte adicional
         "iabdelkareem/csharp.nvim",
         config = function()
-            require("csharp").setup({
-                -- Configuración específica de csharp.nvim si es necesaria
-            })
+            require("csharp").setup({})
         end,
     },
     {
-        -- nvim-dap
+        -- nvim-dap (depuración)
         "mfussenegger/nvim-dap",
         config = function()
-            -- No hay una función setup para nvim-dap, pero puedes configurar adaptadores aquí
             local dap = require("dap")
 
-            -- Configuración de adaptadores (por ejemplo, para C#)
             dap.adapters.coreclr = {
-                type = 'executable',
-                command = 'netcoredbg',
-                args = {'--interpreter=vscode'}
+                type = "executable",
+                command = "netcoredbg",
+                args = { "--interpreter=vscode" },
             }
 
             dap.configurations.cs = {
@@ -96,14 +104,14 @@ return {
                     name = "launch - netcoredbg",
                     request = "launch",
                     program = function()
-                        return vim.fn.input('Path to dll', vim.fn.getcwd() .. '/bin/Debug/', 'file')
+                        return vim.fn.input("Path to dll", vim.fn.getcwd() .. "/bin/Debug/", "file")
                     end,
                 },
             }
         end,
     },
     {
-        -- structlog.nvim
+        -- Logger opcional
         "Tastyep/structlog.nvim",
     },
 }
